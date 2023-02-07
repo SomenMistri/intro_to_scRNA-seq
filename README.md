@@ -9,3 +9,4 @@ This repository has materials for an Introduction to single cell RNA-sequencing 
 3. Compute and assess QC metrics at every step in the workflow
 4. Cluster cells based on expression data and derive the identity of the different cell types present
 5. Identify the expression pattern of specific gene(s) at the single cell level
+## To begin: Click on Class schedule
