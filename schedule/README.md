@@ -12,10 +12,14 @@
 | ~30 mins  | Install required R packages and data input  |
 | ~5 mins  | Homework Assignment  |
 ## Tuesday, April 18th
+|     Time      |     Topic     |
+| ------------- | ------------- |
 |   ~5 mins  | Review of experimental Design  |
 | ~60 mins  | QC filtering and preliminary clustering  |
 | ~5 mins  | Homework Assignment  |
 ## Thursday, April 20th
+|     Time      |     Topic     |
+| ------------- | ------------- |
 |   ~5 mins  | Review of experimental Design  |
 | ~60 mins  | Integrated analysis and cluster naming  |
 | ~5 mins  | Homework Assignment  |
