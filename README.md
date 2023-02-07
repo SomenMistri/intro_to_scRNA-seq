@@ -10,4 +10,4 @@ This repository has materials for an Introduction to single cell RNA-sequencing 
 4. Cluster cells based on expression data and derive the identity of the different cell types present
 5. Identify the expression pattern of specific gene(s) at the single cell level
 ## To begin: Click on Class schedule
-[I'm an inline-style link](https://www.google.com)
+[Class Schedule](https://www.google.com](https://github.com/SomenMistri/intro_to_scRNA-seq/tree/main/schedule)
