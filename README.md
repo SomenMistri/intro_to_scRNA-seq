@@ -1,4 +1,4 @@
-# Introduction to single cell RNA-seq
+# Introduction to single-cell RNA-seq
 
 ## Teaching Materials
 
@@ -6,7 +6,7 @@ This repository contains teaching materials from hbctraining but has been modifi
 
 ## Description
 
-This repository has materials for an Introduction to single cell RNA-sequencing data analysis. This unit focuses on on how to design a single-cell RNA-seq experiment, and how to efficiently manage and analyze the data starting from count matrices. The steps to generate count matrices from raw data will be discussed, however, the steps to generate count matrices from raw data (FASTQ files) will not be performed. In this unit, we will focus on using the Seurat package using R/RStudio on VACC Open OneDemand. Working knowledge of R/Rstudio is required.
+This repository has materials for an Introduction to single-cell RNA-sequencing data analysis. This unit focuses on how to design a single-cell RNA-seq experiment and how to manage and analyze the data starting from count matrices efficiently. The steps to generate count matrices from raw data will be discussed; however, the steps to create count matrices from raw data (FASTQ files) will not be performed. In this unit, we will use the Seurat package using R/RStudio on VACC Open OnDemand. Working knowledge of R/Rstudio is required.
 
 ## Learning Objectives
 
@@ -16,7 +16,7 @@ This repository has materials for an Introduction to single cell RNA-sequencing 
 4. Cluster cells based on expression data and derive the identity of the different cell types present
 5. Identify the expression pattern of specific gene(s) at the single cell level
 
-## To begin: Click on Class schedule
+## To begin: Click on the Class Schedule
 
 [Class Schedule](https://github.com/SomenMistri/intro_to_scRNA-seq/tree/main/schedule)
 
@@ -25,7 +25,7 @@ This repository has materials for an Introduction to single cell RNA-sequencing 
 
 ## Why single-cell RNA-seq
 
-Across human tissues there is an incredible diversity of cell types, states, and interactions. To better understand these tissues and the cell types present, single-cell RNA-seq (scRNA-seq) offers a glimpse into what genes are being expressed at the level of individual cells.
+Across human tissues, there is an incredible diversity of cell types, states, and interactions. To better understand these tissues and the cell types present, single-cell RNA-seq (scRNA-seq) offers a glimpse into what genes are being expressed at the level of individual cells.
 
 <p align="center">
 <img src="./img/scRNA-seq_cell_diversity.png" width="600">
@@ -33,13 +33,13 @@ Across human tissues there is an incredible diversity of cell types, states, and
 
 _**Image credit:** courtesy of Dr. Ayshwarya Subramanian_
 
-The single-cell RNA-seq (scRNA-seq) offers significant advantages over bulk RNA-seq approach while investigating heterogenous populations of cells. Prior to scRNA-seq, transcriptome analysis was performed using bulk RNA-seq, which is a straight-forward method for comparing the averages of cellular expression. This method can be a good choice if looking at comparative transcriptomics (e.g. samples of the same tissue from different species), and for quantifying expression signatures in disease studies. It also has potential for the discovery of disease biomarkers if you are not expecting or not concerned about cellular heterogeneity in the sample. Two scenarios where scRNA-seq outperforms bulk RNA-seq is shown below: 
+The single-cell RNA-seq (scRNA-seq) offers significant advantages over the bulk RNA-seq approach while investigating heterogeneous populations of cells. Before scRNA-seq, transcriptome analysis was performed using bulk RNA-seq, a straightforward method for comparing the averages of cellular expression. This method can be a good choice if looking at comparative transcriptomics (e.g., samples of the same tissue from different species) and for quantifying expression signatures in disease studies. It also has the potential for discovering disease biomarkers if you are not expecting or concerned about cellular heterogeneity in the sample. Two scenarios where scRNA-seq outperforms bulk RNA-seq are shown below: 
 
 <p align="center">
 <img src="./img/BulkvsSC_smoothie.png" width="600">
 </p>
 
-While bulk RNA-seq can explore differences in gene expression between conditions (e.g. treatment or disease), the differences at the cellular level are not adequately captured. For instance, in the images below, if analyzed in bulk (left) we would not detect the correct association between the expression of gene A and gene B. However, if we properly group the cells by cell type or cell state, we can see the correct correlation between the genes.
+While bulk RNA-seq can explore differences in gene expression between conditions (e.g., treatment or disease), the differences at the cellular level need to be adequately captured. For instance, in the images below, if analyzed in bulk (left), we would not detect the correct association between the expression of gene A and gene B. However, if we properly group the cells by cell type or cell state, we can see the correct correlation between the genes.
 
 <p align="center">
 <img src="./img/sc_vs_bulk_cells.png" width="500">
@@ -53,13 +53,25 @@ This exciting and cutting-edge scRNA-seq method can be used to:
 - explore which cell types are present in a tissue
 - identify unknown/rare cell types or states
 - elucidate the changes in gene expression during differentiation processes or across time or states
-- identify genes that are differentially expressed in particular cell types between conditions (e.g. treatment or disease)
+- identify genes that are differentially expressed in particular cell types between conditions (e.g., treatment or disease)
 - explore changes in expression among a cell type while incorporating spatial, regulatory, and/or protein information
 
-## Let's analyze a publicly available scRNA-seq data
-To understand and perfrom scRNA-seq data analysis, let's choose a publicly available dataset with a specific research goal. Please click this [link](https://rupress.org/jem/article/220/1/e20220503/213546/WNT-signaling-in-the-tumor-microenvironment) to go to the journal webpage.
+## Let's analyze a publicly available scRNA-seq dataset
+To understand and perform scRNA-seq data analysis, let's use a publicly available dataset with a specific research goal. Please click this [link](https://rupress.org/jem/article/220/1/e20220503/213546/WNT-signaling-in-the-tumor-microenvironment) to go to the journal webpage.
 
-Alternatively, you can access the main text along with the supplemental data (IMPORTANT!!) by clicking [here](""./pdf/Article_WNT_signaling_Pancreatic_cancer.png"").
+Alternatively, you can access the main text along with the supplemental data (IMPORTANT!!) by clicking [here](https://github.com/SomenMistri/intro_to_scRNA-seq/blob/main/pdf/Article_WNT_signaling_Pancreatic_cancer.pdf).
+
+The human scRNA-seq datasets (count matrices prepared from raw FASTQ data) utilized by the authors are available [here](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE155698),
+while the mouse scRNA-seq datasets are available [here](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM6127792).
+
+Please note that, for this course, we will focus on human scRNA-seq datasets only.
+
+## Research question, Study design, and technical considerations
+Please go to the PowerPoint slide to discuss the following:
+
+- Why was this study performed?
+- How was the experiment designed to answer the specific research questions?
+- What technical factors must be understood to carry out the experiments successfully?
 
 ### Citation
 
