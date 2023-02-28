@@ -66,12 +66,32 @@ while the mouse scRNA-seq datasets are available [here](https://www.ncbi.nlm.nih
 
 Please note that, for this course, we will focus on human scRNA-seq datasets only.
 
-## Research question, Study design, and technical considerations
-Please go to the PowerPoint slide to discuss the following:
+## Research question and Study design
+Please go to the PowerPoint [slide](https://github.com/SomenMistri/intro_to_scRNA-seq/blob/main/Slides/Study_design.pptx) to discuss the background and specific research question(s).
 
-- Why was this study performed?
-- How was the experiment designed to answer the specific research questions?
-- What technical factors must be understood to carry out the experiments successfully?
+In order to decipher the role of WNT signaling in the tumor microenvironment (TME)of Pancreatic ductal adenocarcinoma (PDAC), this research group performed scRNA-Seq of pancreatic tumor cells and PBMCs originating from  human and mouse sources.
+
+<p align="center">
+<img src="./img/Study_design_PDAC.pdf" width="600">
+</p>
+
+## How scRNA-Seq works: From cell suspension to sequencing-ready libraries 
+Depending on the library preparation method used, the RNA sequences (also referred to as reads or tags), will be derived either from the 3’ ends (or 5’ ends) of the transcripts (10X Genomics, CEL-seq2, Drop-seq, inDrops) or from full-length transcripts (Smart-seq). The choice of method involves the biological question of interest.
+
+In this class, we will primarily focus on the 3’-end sequencing method utilized by 10X Genomics.
+
+The 10X Genomics chromium system performs a single cell droplet-based encapsulation using a gel bead in emulsion (GEM) approach. In the instrument, barcoded gel beads are mixed with cells, enzymes, and partitioning oil forming numerous number of GEMs. Each GEM acts as a micro-reaction droplet where the gel beads dissolve and RNA transcripts from each cell gets barcoded. The barcoded fragments are pooled and sequencer–compatible libraries are created. 
+ 
+ <p align="center">
+<img src="./img/How_scRNseq_works_GEMs.pdf" width="900">
+</p>
+ 
+ Following sequencing, the raw read data is converted into a count matrix using the cellular 10xBarcode and Unique Molecular Identifier (UMI) information imparted in each read. While the cellular 10xBarcode determines which cell the read originated from, the UMI determines which transcript molecule the read originated from. Thus, UMIs help with distinguishing biological duplicates from amplification (PCR) duplicates.
+ 
+  <p align="center">
+<img src="./img/Barcode_UMI_demux.png" width="800">
+</p>
+ 
 
 ### Citation
 
