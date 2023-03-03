@@ -6,7 +6,7 @@ This repository contains teaching materials from hbctraining but has been modifi
 
 ## Description
 
-This repository has materials for an Introduction to single-cell RNA-sequencing data analysis. This unit focuses on how to design a single-cell RNA-seq experiment and how to manage and analyze the data starting from count matrices efficiently. The steps to generate count matrices from raw data will be discussed; however, the steps to create count matrices from raw data (FASTQ files) will not be performed. In this unit, we will use the Seurat package using R/RStudio on VACC Open OnDemand. Working knowledge of R/Rstudio is required.
+This repository has materials for an Introduction to single-cell RNA-sequencing data analysis. This unit focuses on designing a single-cell RNA-seq experiment and managing and analyzing the data starting from count matrices efficiently. The steps to generate count matrices from raw data will be discussed; however, the steps to create count matrices from raw data (FASTQ files) will not be performed. In this unit, we will use the Seurat package using R/RStudio on VACC Open OnDemand. Working knowledge of R/Rstudio is required.
 
 ## Learning Objectives
 
@@ -69,19 +69,19 @@ Please note that, for this course, we will focus on human scRNA-seq datasets onl
 ## Research question and study design
 Please go to the PowerPoint [slide](https://github.com/SomenMistri/intro_to_scRNA-seq/blob/main/Slides/Study_design.pptx) to discuss the background and specific research question(s).
 
-In order to decipher the role of WNT signaling in the tumor microenvironment (TME)of Pancreatic ductal adenocarcinoma (PDAC), this research group performed scRNA-Seq of pancreatic tumor cells and PBMCs originating from  human and mouse sources.
+In order to decipher the role of WNT signaling in the tumor microenvironment (TME)of Pancreatic ductal adenocarcinoma (PDAC), this research group performed scRNA-Seq of pancreatic tumor cells and PBMCs originating from human and mouse sources.
 
 <p align="center">
 <img src="./img/Study_design_PDAC.png" width="600">
 </p>
 
 ## How scRNA-Seq works: From cell suspension to sequencing-ready libraries 
-Depending on the library preparation method used, the RNA sequences (also referred to as reads or tags), will be derived either from the 3’ ends (or 5’ ends) of the transcripts (10X Genomics, CEL-seq2, Drop-seq, inDrops) or from full-length transcripts (Smart-seq). The choice of method involves the biological question of interest.
+Depending on the library preparation method used, the RNA sequences (also referred to as reads or tags) will be derived either from the 3' ends (or 5' ends) of the transcripts (10X Genomics, CEL-seq2, Drop-seq, inDrops) or full-length transcripts (Smart-seq). The choice of the method involves the biological question of interest.
 
-In this class, we will primarily focus on the 3’-end sequencing method utilized by 10X Genomics.
+This class will primarily focus on the 3’-end sequencing method utilized by 10X Genomics.
 
-The 10X Genomics chromium system performs a single cell droplet-based encapsulation using a gel bead in emulsion (GEM) approach. In the instrument, barcoded gel beads are mixed with cells, enzymes, and partitioning oil forming numerous number of GEMs. Each GEM acts as a micro-reaction droplet where the gel beads dissolve and RNA transcripts from each cell gets barcoded. The barcoded fragments are pooled and sequencer–compatible libraries are created. 
- 
+The 10X Genomics chromium system performs a single-cell droplet-based encapsulation using a gel bead-in-emulsion (GEM) approach. In the instrument, barcoded gel beads are mixed with cells, enzymes, and partitioning oil forming numerous GEMs. Each GEM acts as a micro-reaction droplet where the gel beads dissolve, and RNA transcripts from each cell get barcoded. The barcoded fragments are pooled, and sequencer–compatible libraries are created. 
+
  <p align="center">
 <img src="./img/How_scRNseq_works_GEMs.png" width="900">
 </p>
@@ -89,23 +89,22 @@ The 10X Genomics chromium system performs a single cell droplet-based encapsulat
 _**Image credit:** adapted from 10x Genomics brochure_
  
  ## Raw sequencing data to count matrix
- Following sequencing, the raw read data (FASTQ) is converted into a count matrix using the cellular 10xBarcode and Unique Molecular Identifier (UMI) information imparted in each read. While the cellular 10xBarcode determines which cell the read originated from, the UMI determines which transcript molecule the read originated from. Thus, UMIs help with distinguishing biological duplicates from amplification (PCR) duplicates.
- 
+ Following sequencing, the raw read data (FASTQ) is converted into a count matrix using the cellular 10xBarcode and Unique Molecular Identifier (UMI) information imparted in each read. While the cellular 10xBarcode determines which cell the read originated from, the UMI determines which transcript molecule the read originated from. Thus, UMIs distinguish biological duplicates from amplification (PCR) duplicates. 
   <p align="center">
 <img src="./img/Barcode_UMI_demux.png" width="800">
 </p>
  
  This whole process of raw data (FASTQ files) to count matrix can be easily performed using the 10x Genomics Cell Ranger analysis pipeline. This step is computationally very intensive as this involves read alignment to a reference genome. Therefore, this Cell Ranger pipeline needs to be run in VACC. In this class, we will skip this step to save time and start with pre-made 10x Cell Ranger outputs (count matrixes).
  
- Instruction on how to install and run cellranger pipeline can be accessed through this [link](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger).
+Instruction on how to install and run the cellranger pipeline can be accessed through this [link](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger).
 
 ### A typical raw data directory layout
 
-       Magliano_10x_raw_data_human                                       # Main folder provided by the sequencing core
+       Magliano_10x_raw_data_human                          # Main folder provided by the sequencing core
        ├── PDAC_TISSUE_1
-       ├── PDAC_TISSUE_2                                          # Subfolder marking individual samples
-       │   ├── PDAC_TISSUE_2_C7_1_S9_L001_R1_001.fastq.gz         # FASTQ file Read 1
-       │   └── PDAC_TISSUE_2_C7_1_S9_L001_R2_001.fastq.gz         # FASTQ file Read 2
+       ├── PDAC_TISSUE_2                                    # Subfolder marking individual samples
+       │   ├── PDAC_TISSUE_2_C7_1_S9_L001_R1_001.fastq.gz   # FASTQ file Read 1
+       │   └── PDAC_TISSUE_2_C7_1_S9_L001_R2_001.fastq.gz   # FASTQ file Read 2
        ├── PDAC_TISSUE_3               
        ├── PDAC_TISSUE_4
        ├── PDAC_PBMC_1  
@@ -160,7 +159,7 @@ cellranger count --id= PDAC_human_10x \
             │   ├── barcodes.tsv.gz
             │   ├── features.tsv.gz
             │   └── matrix.mtx.gz
-            ├── filtered_feature_bc_matrix.h5  #Alt
+            ├── filtered_feature_bc_matrix.h5  #Alternatively, this file can also be used as a input for downstream R analysis
             ├── raw_feature_bc_matrix        
             └── raw_feature_bc_matrix.h5        
 
