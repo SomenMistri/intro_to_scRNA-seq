@@ -66,7 +66,7 @@ while the mouse scRNA-seq datasets are available [here](https://www.ncbi.nlm.nih
 
 Please note that, for this course, we will focus on human scRNA-seq datasets only.
 
-## Research question and Study design
+## Research question and study design
 Please go to the PowerPoint [slide](https://github.com/SomenMistri/intro_to_scRNA-seq/blob/main/Slides/Study_design.pptx) to discuss the background and specific research question(s).
 
 In order to decipher the role of WNT signaling in the tumor microenvironment (TME)of Pancreatic ductal adenocarcinoma (PDAC), this research group performed scRNA-Seq of pancreatic tumor cells and PBMCs originating from  human and mouse sources.
@@ -88,6 +88,7 @@ The 10X Genomics chromium system performs a single cell droplet-based encapsulat
 
 _**Image credit:** adapted from 10x Genomics brochure_
  
+ ## Raw sequencing data to count matrix
  Following sequencing, the raw read data (FASTQ) is converted into a count matrix using the cellular 10xBarcode and Unique Molecular Identifier (UMI) information imparted in each read. While the cellular 10xBarcode determines which cell the read originated from, the UMI determines which transcript molecule the read originated from. Thus, UMIs help with distinguishing biological duplicates from amplification (PCR) duplicates.
  
   <p align="center">
@@ -97,6 +98,76 @@ _**Image credit:** adapted from 10x Genomics brochure_
  This whole process of raw data (FASTQ files) to count matrix can be easily performed using the 10x Genomics Cell Ranger analysis pipeline. This step is computationally very intensive as this involves read alignment to a reference genome. Therefore, this Cell Ranger pipeline needs to be run in VACC. In this class, we will skip this step to save time and start with pre-made 10x Cell Ranger outputs (count matrixes).
  
  Instruction on how to install and run cellranger pipeline can be accessed through this [link](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger).
+
+### A typical raw data directory layout
+
+       Magliano_10x_raw_data_human                                       # Main folder provided by the sequencing core
+       ├── PDAC_TISSUE_1
+       ├── PDAC_TISSUE_2                                          # Subfolder marking individual samples
+       │   ├── PDAC_TISSUE_2_C7_1_S9_L001_R1_001.fastq.gz         # FASTQ file Read 1
+       │   └── PDAC_TISSUE_2_C7_1_S9_L001_R2_001.fastq.gz         # FASTQ file Read 2
+       ├── PDAC_TISSUE_3               
+       ├── PDAC_TISSUE_4
+       ├── PDAC_PBMC_1  
+       ├── PDAC_PBMC_2
+       ├── PDAC_PBMC_3               
+       └── PDAC_PBMC_4
+       
+### A typical "Cell Ranger count" run in VACC
+
+```
+#------------------------------------------------------------
+#!/bin/bash
+# Set Partition
+#SBATCH  --partition=bigmem
+# Request nodes
+#SBATCH --nodes=1
+# Request some processor cores
+#SBATCH --ntasks=12
+# Request memory
+#SBATCH --mem=192G
+# time
+#SBATCH --time 16:00:00
+# Name of this job
+#SBATCH --job-name=PDAC_human
+# Output of this job, stderr and stdout are joined by default
+# %x=job-name %j=jobid
+#SBATCH --output=%x_%j.out
+# Notify me via email -- please change the username!
+#SBATCH --mail-user=username@uvm.edu
+#SBATCH --mail-type=ALL
+#------------------------------------------------------------
+
+# navigate to the folder where you want the analysis to happen
+cd /username/scRNAseq/
+
+cellranger count --id= PDAC_human_10x \
+                 --transcriptome=/username/reference_sequences/cellranger_references/refdata-gex-GRCh38-2020-A.tar.gz \
+                 --fastqs=/username/scRNAseq/Magliano_10x_raw_data_human \
+                 --sample= PDAC_TISSUE_1_C6_1, PDAC_TISSUE_2_C7_2, PDAC_TISSUE_3_C8_3, PDAC_TISSUE_4_C9_4 \
+                 --expect-cells=6000 \
+                 --jobmode=local \
+                 --localcores=12 \
+                 --localmem=14
+                 
+ ```   
+ 
+              
+### A typical "Cell Ranger count" output looks like this:
+    PDAC_human_10x                                      
+        └── outs                                          
+            ├── filtered_feature_bc_matrix     #this is the folder you need for downstream R analysis
+            │   ├── barcodes.tsv.gz
+            │   ├── features.tsv.gz
+            │   └── matrix.mtx.gz
+            ├── filtered_feature_bc_matrix.h5  #Alt
+            ├── raw_feature_bc_matrix        
+            └── raw_feature_bc_matrix.h5        
+
+# Part 2             
+                     
+
+
 
 ### Citation
 
