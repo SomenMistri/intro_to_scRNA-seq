@@ -72,7 +72,7 @@ Please go to the PowerPoint [slide](https://github.com/SomenMistri/intro_to_scRN
 In order to decipher the role of WNT signaling in the tumor microenvironment (TME)of Pancreatic ductal adenocarcinoma (PDAC), this research group performed scRNA-Seq of pancreatic tumor cells and PBMCs originating from  human and mouse sources.
 
 <p align="center">
-<img src="./img/Study_design_PDAC.pdf" width="600">
+<img src="./img/Study_design_PDAC.png" width="600">
 </p>
 
 ## How scRNA-Seq works: From cell suspension to sequencing-ready libraries 
