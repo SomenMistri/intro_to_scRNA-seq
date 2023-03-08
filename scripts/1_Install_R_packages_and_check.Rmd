@@ -23,7 +23,7 @@ install.packages("ggplot2")
 ```
 
 ##### Check for successful installation by loading the packages
-```{r}
+```{r chunk 3}
 library(XVector)
 library(Seurat)
 library(tidyverse)

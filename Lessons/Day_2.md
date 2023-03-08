@@ -25,7 +25,43 @@ After quantifying gene expression from raw sequencing reads, we need to bring th
 ### Launching a RStudio Server session on UVM VACC Open OnDemand
 
 ### Install required R packages and check whether the installation is a success
-Open the 1_Install_R_packages_and_check.Rmd R markdown file. Run the first chunk (chunk 1) to install R packages Bioconductor using the the BiocManager::install() function.
+
+Open the 1_Install_R_packages_and_check.Rmd R markdown file.
+
+> **Note 1:  All the package names listed below are case sensitive!**
+ 
+> **Note 2**: At any point (especially if you’ve used R/Bioconductor in the past), in the console **R may ask you if you want to update any old packages by asking Update all/some/none? [a/s/n]:**. If you see this, **type "a" at the prompt and hit Enter** to update any old packages. _Updating packages can sometimes take quite a bit of time to run, so please account for that before you start with these installations._  
+
+> **Note 3:** If you see a message in your console along the lines of “binary version available but the source version is later”, followed by a question, **“Do you want to install from sources the package which needs compilation? y/n”, type n for no, and hit enter**.
+
+ Run the first chunk (**chunk 1**) to install R packages Bioconductor using the the `BiocManager::install()` function.
+
+`if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("XVector",force = TRUE)
+BiocManager::install("multtest")
+BiocManager::install("glmGamPo")`
+
+Now run the second chunk (**chunk 2**) to install packages listed below from **CRAN** using the `install.packages()` function. 
+`install.packages('tidyverse')
+install.packages('Matrix')
+install.packages('RCurl')
+install.packages('scales')
+install.packages('metap')
+install.packages('Seurat')
+install.packages("ggplot2")`
+
+Finally, please check that all the packages were installed successfully by **loading** them using the `library()` function (**chunk 3**).
+`library(XVector)
+library(Seurat)
+library(tidyverse)
+library(Matrix)
+library(RCurl)
+library(scales)`
+
+
+
+
 
 
      
