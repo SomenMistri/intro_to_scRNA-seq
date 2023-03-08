@@ -141,7 +141,7 @@ cellranger count --id= PDAC_human_10x \
             └── raw_feature_bc_matrix.h5        
 
 
-### A typical single cell RNA-seq analysis workflow
+## A typical single cell RNA-seq analysis workflow
 After quantifying gene expression from raw sequencing reads, we need to bring the count matrix data (filtered_feature_bc_matrix) into R to generate metrics for performing QC and further downstream analysis.
 
  <p align="center">
