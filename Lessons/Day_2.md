@@ -268,3 +268,59 @@ H1_AAACGAAGTAGGGTAC-1    Human-1      26196         4641 -0.043996838 -0.0805917
 H1_AAACGAAGTCATAGTC-1    Human-1      72725         7990 -0.055117973 -0.09913018    G1  14.349948   14.3045720
 H1_AAAGAACCATTAAAGG-1    Human-1      12734         4046 -0.027648932 -0.08673782    G1   3.683053    8.0021988
 ```
+
+There are three columns of information:
+
+- `orig.ident`: this column will contain the sample identity if known. It will default to the value we provided for the `project` argument when loading in the data
+- `nCount_RNA`: this column represents  the number of UMIs per cell
+- `nFeature_RNA`: this column represents the number of genes detected per cell
+
+ <p align="center">
+<img src="../img/nCount_RNA_nFeature_RNA.png" width="300">
+</p>
+
+### Visualize the common  QC metrics
+Run **chunk 7** to plot the common QC metrics. 
+```
+VlnPlot(data_merged, features = c("nFeature_RNA", "nCount_RNA"), ncol = 2)
+VlnPlot(data_merged, features = c("percent.MT","percent.RIBO"), ncol = 2)
+FeatureScatter(data_merged, feature1 = "percent.RIBO", feature2 = "percent.MT")
+FeatureScatter(data_merged, feature1 = "nCount_RNA", feature2 = "nFeature_RNA")
+```
+
+ <p align="center">
+<img src="../img/before_filtering.png" width="900">
+</p>
+
+#### Assessing the quality metrics
+Now that we have generated the various metrics to assess, we can explore them with visualizations. We will assess various metrics and then decide on which cells are low quality and should be removed from the analysis.
+
+
+- UMI counts per cell (nCount_RNA)
+- Genes detected per cell (nFeature_RNA_)
+- Mitochondrial counts ratio
+- Ribosomal counts ratio
+
+> **What about doublets?** In single-cell RNA sequencing experiments, doublets are generated from two cells. They typically arise due to errors in cell sorting or capture, especially in droplet-based protocols involving thousands of cells. Doublets are obviously undesirable when the aim is to characterize populations at the single-cell level. In particular, they can incorrectly suggest the existence of intermediate populations or transitory states that do not actually exist. Thus, it is desirable to remove doublet libraries so that they do not compromise interpretation of the results.
+
+> _Note:_ Many workflows use maximum thresholds for UMIs or genes, with the idea that a much higher number of reads or genes detected indicate multiple cells. While this rationale seems to be intuitive, it is not always accurate. Also, many of the tools used to detect doublets tend to get rid of cells with intermediate or continuous phenotypes, although they may work well on datasets with very discrete cell types.
+
+ <p align="center">
+<img src="../img/singlet_doublet.png" width="400">
+</p>
+
+Good cells will generally exhibit both higher number of genes per cell (nFeature_RNA) and higher numbers of UMIs (nCount_RNA) per cell. Cells that are **poor quality** are likely to have low nFeature_RNA and nCount_RNA. Also **Mitochondrial read fractions** are only high in particularly low count cells with few detected genes.
+
+#### Perform filtering and remake QC plots again on filtered cells
+Now that we have visualized the various metrics, we can decide on the thresholds to apply which will result in the removal of low quality cells. Often the recommendations mentioned earlier are a rough guideline, and the specific experiment needs to inform the exact thresholds chosen. We will use the following thresholds:
+
+nCount_RNA > 500
+nGe > 250
+log10GenesPerUMI > 0.8
+mitoRatio < 0.2
+To filter, we wil go back to our Seurat object and use the subset() function:
+Run **chunk 8** to 
+
+
+
+

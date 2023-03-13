@@ -68,7 +68,7 @@ _**Image credit:** adapted from 10x Genomics brochure_
  ## Raw sequencing data to count matrix
  Following sequencing, the raw read data (FASTQ) is converted into a count matrix using the cellular 10xBarcode and Unique Molecular Identifier (UMI) information imparted in each read. While the cellular 10xBarcode determines which cell the read originated from, the UMI determines which transcript molecule the read originated from. Thus, UMIs distinguish biological duplicates from amplification (PCR) duplicates. 
   <p align="center">
-<img src="../img/Barcode_UMI_demux.png" width="800">
+<img src="../img/Barcode_UMI_demux.png" width="600">
 </p>
  
  This whole process of raw data (FASTQ files) to count matrix can be easily performed using the 10x Genomics Cell Ranger analysis pipeline. This step is computationally very intensive as this involves read alignment to a reference genome. Therefore, this Cell Ranger pipeline needs to be run in VACC. In this class, we will skip this step to save time and start with pre-made 10x Cell Ranger outputs (count matrixes).
