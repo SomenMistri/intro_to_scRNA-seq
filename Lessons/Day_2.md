@@ -37,7 +37,7 @@ cp -r /gpfs1/cl/mmg232/course_materials/scRNAseq_analysis.tar
 
 Then, extract the .tar file in your home directory. You should see a new folder named "scRNAseq_analysis" in your home directory. 
 
-```bash
+```
 tar -xvf scRNAseq_analysis.tar
 ```
 
@@ -323,6 +323,7 @@ Now that we have visualized the various metrics, we can decide on the thresholds
 - percent.RIBO > 3
 
 Run **chunk 8** to filter the merged dataset based on the parameters specified above. Here we are using the use the subset() function.
+
 ```{r chunk 8}
 data_filtered <- subset(data_merged, subset = nFeature_RNA > 500 & nCount_RNA < 200000 & percent.MT < 25 & percent.RIBO > 3)
 VlnPlot(data_filtered, features = c("nFeature_RNA", "nCount_RNA"), ncol = 2)
@@ -330,7 +331,9 @@ VlnPlot(data_filtered, features = c("percent.MT","percent.RIBO"), ncol = 2)
 FeatureScatter(data_filtered, feature1 = "percent.RIBO", feature2 = "percent.MT")
 FeatureScatter(data_filtered, feature1 = "nCount_RNA", feature2 = "nFeature_RNA")
 ```
+ <p align="center">
+<img src="../img/after_filtering.png" width="900">
+</p>
 
 
-
-
+We can re-run **chunk 8** again and again with different filtering parameters.
