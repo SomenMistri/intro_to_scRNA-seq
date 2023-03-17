@@ -295,7 +295,7 @@ FeatureScatter(data_merged, feature1 = "nCount_RNA", feature2 = "nFeature_RNA")
 <img src="../img/before_filtering.png" width="900">
 </p>
 
-#### Assessing the quality metrics
+### Assessing the quality metrics
 Now that we have generated the various metrics to assess, we can explore them with visualizations. We will assess various metrics and then decide on which cells are low quality and should be removed from the analysis.
 
 
@@ -314,7 +314,7 @@ Now that we have generated the various metrics to assess, we can explore them wi
 
 Good cells will generally exhibit both higher number of genes per cell (nFeature_RNA) and higher numbers of UMIs (nCount_RNA) per cell. Cells that are **poor quality** are likely to have low nFeature_RNA and nCount_RNA. Also **Mitochondrial read fractions** are only high in particularly low count cells with few detected genes.
 
-#### Perform filtering and remake QC plots again on filtered cells
+### Perform filtering
 Now that we have visualized the various metrics, we can decide on the thresholds to apply which will result in the removal of low quality cells. Often the recommendations mentioned earlier are a rough guideline, and the specific experiment needs to inform the exact thresholds chosen. We will use the following thresholds:
 
 - nFeature_RNA > 500
@@ -331,9 +331,60 @@ VlnPlot(data_filtered, features = c("percent.MT","percent.RIBO"), ncol = 2)
 FeatureScatter(data_filtered, feature1 = "percent.RIBO", feature2 = "percent.MT")
 FeatureScatter(data_filtered, feature1 = "nCount_RNA", feature2 = "nFeature_RNA")
 ```
+
+### Re-assess QC metrics
+After performing the filtering, it’s recommended to look back over the metrics to make sure that your data matches your expectations and is good for downstream analysis. If not satisfied, you can re-run **chunk 8** again and again with a different set of filtering parameters.
+
  <p align="center">
 <img src="../img/after_filtering.png" width="900">
 </p>
 
+### Save the filtered seurat object
+Based on these QC metrics we would identify any failed samples and move forward with our filtered cells. Often we iterate through the QC metrics using different filtering criteria; it is not necessarily a linear process. When satisfied with the filtering criteria, we would save our filtered cell object for clustering and marker identification. Please run **chunk 9** to save the filtered cells as a .rds file:
 
-We can re-run **chunk 8** again and again with different filtering parameters.
+```{r chunk 9}
+saveRDS(data_filtered, file = "data_filtered.rds")
+```
+
+**Note:** In the **next lesson**, we are going to read in this **"data_filtered.rds"** file as an input. Therefore, if you do not make this file before the next class starts, you **won't be able to follow** the future lessons.
+
+---------------------------------
+                                             -------END of THIS LESSON -------
+                                             ---------------------------------
+
+****
+## Homework
+First, take a look at the **scRNAseq_analysis** folder:
+    
+    scRNAseq_analysis                         
+       ├──0_Install_R_packages_and_check.Rmd
+       ├──1_Human_PDAC_tissue 
+       │   │                                  
+       │   ├── 1_Data_loading_and_QC_filtering
+       │   │    ├──PDAC_tissue_1_filtered_feature_bc_matrix
+       │   │    ├──PDAC_tissue_2_filtered_feature_bc_matrix
+       │   │    ├──PDAC_tissue_3_filtered_feature_bc_matrix
+       │   │    ├──PDAC_tissue_4_filtered_feature_bc_matrix
+       │   │    └──1_data_loading_and_QC_filtering.Rmd
+       │   │
+       │   ├──2_Integration_and_Clustering    
+       │   └──3_Data_Visualization
+       │   
+       └──2_Human_PDAC_PBMC
+           │                                  
+           └── 1_Data_loading_and_QC_filtering
+                ├──PDAC_pbmc_1_filtered_feature_bc_matrix
+                ├──PDAC_pbmc_2_filtered_feature_bc_matrix
+                ├──PDAC_pbmc_3_filtered_feature_bc_matrix
+                ├──PDAC_pbmc_4_filtered_feature_bc_matrix
+                └──1_data_loading_and_QC_filtering.Rmd
+                
+Open the **2_Human_PDAC_PBMC** folder. There you will find four count matrices of PBMC samples from four human PDAC patients.
+
+Also, you will find the **1_data_loading_and_QC_filtering.Rmd** R markdown file. This is the same R markdown file we went over in this lesson.
+
+Your homework is to replicate the data loading and QC filtering steps we performed today on these PBMC dataset. After running all the **chunks** of this script, please save it. This will create a **1_data_loading_and_QC_filtering.nb.html** file in the same folder. Rename this **.html** file with your last name and email it to the **smistri@uvm.edu** address.
+
+_Hint: You will need to edit **chunk 2** to load the new PBMC count matrices which have different filenames._
+
+_Note: Please use a different set of filtering parameters for the human PBMC datasets_
