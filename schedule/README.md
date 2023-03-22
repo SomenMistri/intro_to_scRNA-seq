@@ -30,3 +30,10 @@
 | ~30 mins  | Visualization of specific gene expression  |
 | ~30 mins  | Paper discussion and challenges of scRNA-seq  |
 | ~5 mins  | Homework Assignment  |
+
+## Questions?
+Please email me if you have questions or would like to schedule a meeting  
+
+Email: smistri@uvm.edu
+Office: Given E305B
+Office phone number: 802-656-8832 (Monday-Friday; 8am to 5pm)

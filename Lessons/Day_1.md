@@ -1,6 +1,6 @@
 # Introduction to single-cell RNA sequencing
 
-## Why scRNA-Seq?
+## Why scRNA-seq?
 
 Across human tissues, there is an incredible diversity of cell types, states, and interactions. To better understand these tissues and the cell types present, single-cell RNA-seq (scRNA-seq) offers a glimpse into what genes are being expressed at the level of individual cells.
 
@@ -32,6 +32,18 @@ This exciting and cutting-edge scRNA-seq method can be used to:
 - elucidate the changes in gene expression during differentiation processes or across time or states
 - identify genes that are differentially expressed in particular cell types between conditions (e.g., treatment or disease)
 - explore changes in expression among a cell type while incorporating spatial, regulatory, and/or protein information
+
+## Challenges of scRNA-seq analysis
+While scRNA-seq is a powerful and insightful method for the analysis of gene expression with single-cell resolution, there are many challenges and sources of variation that can make the analysis of the data complex or limited. Throughout the analysis of scRNA-seq data, we will try to account for or regress out variation due to the various sources of uninteresting variation in our data.
+**Overall, the following is recommend:**
+
+- Do not perform single-cell RNA-seq unless it is necessary for the experimental question of interest. Could you answer the question using bulk sequencing, which is simpler and less costly? Perhaps FACS sorting the samples could allow for bulk analysis?
+- Understand the details of the experimental question you wish to address. The recommended library preparation method and analysis workflow can vary based on the specific experiment.
+- Avoid technical sources of variability, if possible:
+	- Discuss experimental design with experts prior to the initiation of the experiment
+	- Isolate RNA from samples at same time 
+	- Prepare libraries at same time or alternate sample groups to avoid batch confounding
+	- Do not confound sample groups by sex, age, or batch
 
 ## Let's analyze a publicly available scRNA-seq dataset
 To understand and perform scRNA-seq data analysis, let's use a publicly available dataset with a specific research goal. Please click this [link](https://rupress.org/jem/article/220/1/e20220503/213546/WNT-signaling-in-the-tumor-microenvironment) to go to the journal webpage.
