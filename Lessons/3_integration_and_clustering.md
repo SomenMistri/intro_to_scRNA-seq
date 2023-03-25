@@ -111,91 +111,37 @@ The proposed solution was the use of **Pearson residuals for transformation**, a
 _In this lesson we will primarily use the "SCTransform" function of seurat to normalize the data. Note that this single _SCTransform()_ command replaces _NormalizeData(), ScaleData(), and FindVariableFeatures()_ commands of the original Seurat workflow which performs the log-normalization.
 
 
-##  Explore sources of unwanted variation
+## Clustering cells based on top Principal components (PCs)
 
-The most common biological data correction (or source of "uninteresting" variation) in single cell RNA-seq is the effects of the cell cycle on the transcriptome. We need to explore the data and see if we observe any effects in our data. 
+### Principal Component Analysis (PCA)
+Principal Component Analysis (PCA) is a technique used to emphasize variation as well as similarity, and to bring out strong patterns in a dataset; it is one of the methods used for *"dimensionality reduction"*. We will briefly go over PCA in this lesson (adapted from StatQuests/Josh Starmer's YouTube video), but we strongly encourage you to explore the video [StatQuest's video](https://www.youtube.com/watch?v=_UVHneBUBW0) for a more thorough explanation/understanding. 
 
-### Evaluating effects of cell cycle 
+#### Basic explanation with a simple example
 
-In lesson 1, we have already assigned each cell a score based on its expression of G2/M and S phase markers.
-
-Now, we want to **determine whether cell cycle is a major source of variation in our dataset using the Principal Component Analysis (PCA)**. 
-
-### PCA
-
-Principal Component Analysis (PCA) is a technique used to emphasize variation as well as similarity, and to bring out strong patterns in a dataset; it is one of the methods used for *"dimensionality reduction"*. 
-
-
-Let's say you are working with a single-cell RNA-seq dataset with *12,000 cells* and you have quantified the expression of *20,000 genes*. The schematic below demonstrates how you would go from a cell x gene matrix to principal component (PC) scores for each inividual cell.
+Let's say you had quantified the expression of four genes in two samples (or cells), you could plot the expression values of those genes with one sample represented on the x-axis and the other sample on the y-axis as shown below:
 
 <p align="center">
-<img src="../img/PCA_scrnaseq_1.png" width="900">
+<img src="../img/PCA_2sample_genes.png" width="600">
 </p>
 
-After the PC scores have been calculated, you are looking at a matrix of 12,000 x 12,000 that represents the information about relative gene expression in all the cells. You can select the PC1 and PC2 columns and plot that in a 2D way.
+You could draw a line through the data in the direction representing the **most variation**, which is on the diagonal in this example. The maximum variation in the dataset is between the genes that make up the two endpoints of this line.  
+
+We also see the genes vary somewhat above and below the line. We could draw another line through the data representing **the second most amount of variation** in the data, since this plot is in 2D (2 axes).
+
+The genes near the ends of each line would be those with the highest variation; these genes have the **greatest influence** on the direction of the line, mathematically. For example, a small change in the value of *Gene C* would greatly change the direction of the longer line, whereas a small change in *Gene A* or *Gene D* would have little affect on it.
 
 <p align="center">
-<img src="../img/PCA_scrnaseq_2.png" width="600">
+<img src="../img/PCA_2sample_variation2.png" width="600">
 </p>
 
-You can also use the PC scores from the first 40 PCs for downstream analysis like clustering, marker identification etc., since these represent the majority of the variation in the data. We will be talking a lot more about this later in this workshop.
+
+We could also rotate the entire plot and view the lines representing the variation as left-to-right and up-and-down. We see most of the variation in the data is left-to-right (longer line) and the second most variation in the data is up-and-down (shorter line). You can now think of these lines as the axes that represent the variation. These axes are essentially the "Principal Components", with PC1 representing the most variation in the data and PC2 representing the second most variation in the data. 
 
 <p align="center">
-<img src="../img/PCA_scrnaseq_3.png" width="600">
+<img src="../img/PCA_2sample_rotate.png" width="300">
 </p>
 
-> *NOTE:* For datasets with a larger number of cells, only the PC1 and PC2 scores for each cell are usually plotted, or used for visualization. Since these PCs explain the most variation in the dataset, the expectation is that the cells that are more similar to each other will cluster together with PC1 and PC2.
+Now, what if we had three samples/cells, then we would have an extra direction in which we could have variation (3D). Therefore, if we have *N* samples/cells we would have *N*-directions of variation or *N* principal components (PCs)! Once these PCs have been calculated, the PC that deals with the largest variation in the dataset is designated PC1, and the next one is designated PC2 and so on. 
 
-### Using PCA to evaluate the effects of cell cycle
 
-To perform PCA, we need to **first choose the most variable features, then scale the data**. Since highly expressed genes exhibit the highest amount of variation and we don't want our 'highly variable genes' only to reflect high expression, we need to scale the data to scale variation with expression level. The Seurat `ScaleData()` function will scale the data by:
-
-* adjusting the expression of each gene to give a mean expression across cells to be 0
-* scaling expression of each gene to give a variance across cells to be 1
-
-```r
-# Identify the most variable genes
-seurat_phase <- FindVariableFeatures(seurat_phase, 
-                     selection.method = "vst",
-                     nfeatures = 2000, 
-                     verbose = FALSE)
-		     
-# Scale the counts
-seurat_phase <- ScaleData(seurat_phase)
-```
-
-> _**NOTE:** For the `selection.method` and `nfeatures` arguments the values specified are the default settings. Therefore, you do not necessarily need to include these in your code. We have included it here for transparency and inform you what you are using._	
-
-Now, we can perform the PCA analysis and plot the first two principal components against each other. We also split the figure by cell cycle phase, to evaluate similarities and/or differences. **We do not see large differences due to cell cycle phase. Based on this plot, we would not regress out the variation due to cell cycle.**
-
-```r
-# Perform PCA
-seurat_phase <- RunPCA(seurat_phase)
-
-# Plot the PCA colored by cell cycle phase
-DimPlot(seurat_phase,
-        reduction = "pca",
-        group.by= "Phase",
-        split.by = "Phase")
-```
-
-<p align="center">
-<img src="../img/pre_phase_pca.png" width="800">
-</p>
-
-<details>
-	<summary><b><i>When should cell cycle phase be regressed out?</i></b></summary>
-	<br>Below are two PCA plots taken from the Seurat vignette dealing with <a href="https://satijalab.org/seurat/archive/v3.1/cell_cycle_vignette.html">Cell-Cycle Scoring and Regression</a>.<br>
-
- 	<ul><li>This first plot is similar to what we plotted above, it is a PCA prior to regression to evaluate if the cell cycle is playing a big role in driving PC1 and PC2. Clearly, the cells are separating by cell type in this case, so the vignette suggests regressing out these effects.</li></ul>
- 	<p align="center">
- 	<img src="../img/cell_cycle_not_regressed.png" width="400">
- 	</p>
-
-	<ul><li>This second PCA plot is <b>post-regression</b>, and displays how effective the regression was in removing the effect we observed.</li></ul>
-
-	<p align="center">
-	<img src="../img/cell_cycle_regressed.png" width="400">
-	</p>
-</details>
 
