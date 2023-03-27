@@ -28,7 +28,7 @@ This repository has materials for an Introduction to single-cell RNA-sequencing 
       
 [Day 3: Data integration and clustering](/Lessons/3_integration_and_clustering.md)
 
-[Day 4: Data integration and clustering](/Lessons/4_data_visualization_interpretation.md)
+[Day 4: Data visualization and interpretation](/Lessons/4_data_visualization_interpretation.md)
 
                      
 ### Citation
