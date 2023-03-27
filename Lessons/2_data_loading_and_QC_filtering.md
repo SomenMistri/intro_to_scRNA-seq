@@ -31,13 +31,13 @@ _**Recommendations:**_
 ### Getting ready with the count matrix and R markdown files
 First, log in to  your VACC account. Copy the scRNAseq_analysis.tar file from the shared folder to your home directory. This .tar file contains the count matrix files as well as the necessary R markdown files (.Rmd) required for this tutorial.
 
-```
+```bash
 cp -r /gpfs1/cl/mmg232/course_materials/scRNAseq_analysis.tar
 ```
 
 Then, extract the .tar file in your home directory. You should see a new folder named "scRNAseq_analysis" in your home directory. 
 
-```
+```bash
 tar -xvf scRNAseq_analysis.tar
 ```
 
@@ -79,7 +79,7 @@ You can also install these packages by copying and pasting the code chunks into 
 
 Run the first chunk (**chunk 1**) to install R packages Bioconductor using the the `BiocManager::install()` function.
 
-```{r chunk 1}
+```r
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("XVector",force = TRUE)
@@ -89,7 +89,7 @@ BiocManager::install("glmGamPoi")
 
 Now run the second chunk (**chunk 2**) to install packages listed below from **CRAN** using the `install.packages()` function. 
 
-```{r chunk 2}
+```r
 install.packages('tidyverse')
 install.packages('Matrix')
 install.packages('RCurl')
@@ -102,7 +102,7 @@ install.packages("sctransform")
 
 Finally, please check that all the packages were installed successfully by **loading** them using the `library()` function (**chunk 3**).
 
-```{r chunk 3}
+```r
 library(XVector)
 library(Seurat)
 library(tidyverse)
@@ -123,7 +123,7 @@ Please navigate to the "/scRNAseq_analysis/1_Human_PDAC_tissue/" folder and clic
 ### Load required packages
 
 To load the required packages using the **library()** function, run **chunk 1** by clicking on the "Run Current Chunk" button on the right. This will load the following packages. 
-```{r chunk 1}
+```r
 library(XVector)
 library(Seurat)
 library(tidyverse)
@@ -136,7 +136,7 @@ _Note: If you have not installed the packages yet, then install them first befor
 
 ### Load individual count matrices     
 Read in the data by running **chunk 2**. The Read10X() function reads in the output of the cellranger pipeline from 10X, returning a unique molecular identified (UMI) count matrix. The values in this matrix represent the number of molecules for each feature (i.e. gene; row) that are detected in each cell (column).
-```{r chunk 2}
+```r
 data1 <- Read10X("PDAC_tissue_1_filtered_feature_bc_matrix")
 data2 <- Read10X("PDAC_tissue_2_filtered_feature_bc_matrix")
 data3 <- Read10X("PDAC_tissue_3_filtered_feature_bc_matrix")
@@ -144,7 +144,7 @@ data4 <- Read10X("PDAC_tissue_4_filtered_feature_bc_matrix")
 ```
 This is how the imported data looks like:
 
-```{r}
+```r
 > head(data1)
 6 x 1633 sparse Matrix of class "dgCMatrix"
   [[ suppressing 87 column names ‘AAACGAAAGTGGAAAG-1’, ‘AAACGAAGTAGGGTAC-1’, ‘AAACGAAGTCATAGTC-1’ ... ]]
@@ -171,7 +171,7 @@ AL627309.1   ......
 
 Let's use the individual count matrices to create separate Seurat objects by running **chunk 3**. The seurat object serves as a container for both the data (like the count matrix) and analysis (e.g. PCA, metadata) for a single-cell dataset.
 
-```{r chunk 3}
+```r
 data_seurat1 <- CreateSeuratObject(counts = data1, project = "Human-1", min.cells = 3, min.features = 200)
 data_seurat2 <- CreateSeuratObject(counts = data2, project = "Human-2", min.cells = 3, min.features = 200)
 data_seurat3 <- CreateSeuratObject(counts = data3, project = "Human-3", min.cells = 3, min.features = 200)
@@ -189,7 +189,7 @@ To perform cell cycle scoring, run **chunk 4**. In this chunk, we are first Log 
 
 > **Note:**  If you receive any warning, read it carefully. You can ignore some warnings, while take action upon receiving some.
 
-```{r chunk 4}
+```r
 #segregate the "cc.genes.updated.2019" list into markers of G2/M phase and markers of S phase
 s.genes <- cc.genes.updated.2019$s.genes
 g2m.genes <- cc.genes.updated.2019$g2m.genes
@@ -212,7 +212,7 @@ head(data_norm1[[]])
 
 Use the **head()** function to make sure that **Phase** information was added as a new column. 
 
-```{r}
+```r
 > head(data_norm1)
                    orig.ident nCount_RNA nFeature_RNA      S.Score   G2M.Score Phase
 AAACGAAAGTGGAAAG-1    Human-1        501          269 -0.021500501  0.02518923   G2M
@@ -232,14 +232,14 @@ AAAGGTACACATACGT-1    Human-1       1036          559  0.013891934 -0.04456541  
 Run **chunk 5** to merge all four seurat objects into one. The merge() function merges the raw count matrices of two or more Seurat objects creating a new Seurat object with a combined raw count matrix. Then, let's take a look at the metadata of the merged seurat object using the View() function.
 
 
-```{r chunk 5}
+```r
 #NOTE: By default, merge() function combines Seurat objects based on the raw count matrices, erasing any previous normalization
 data_merged <- merge(data_norm1, y = c(data_norm2, data_norm3, data_norm4), add.cell.ids = c("H1", "H2", "H3","H4"), project = "Human_1234")
 ```
 
 To make sure that cells from all the human samples were merged properly, you can use the table() function:
 
-```{r}
+```r
 > table(data_merged$orig.ident)
 
 Human-1 Human-2 Human-3 Human-4 
@@ -251,7 +251,7 @@ Human-1 Human-2 Human-3 Human-4
 Run **chunk 6** to calculate the mitochondrial and ribosomal transcript percentage per cell. Seurat has a function that enables us to do this. The PercentageFeatureSet() function can take a specific pattern and search through the dataset for that pattern. We can search for mitochondrial genes by looking for the pattern "MT-". Similarly, for the ribosomal genes, we can look for the pattern "^RP[SL]".
 Usually, cells with high proportions of mitochondrial genes are considered as poor-quality cells. On the other hand, percentage of ribosomal transcript per cell varies greatly from cell type to cell type. Therefore, caution should be taken to use percent.RIBO values to filter out low quality cells.
 
-```{r chunk 6}
+```r
 # The [[ operator can add columns to object metadata. This is a great place to stash QC stats
 #First add column with mitochondiral gene expression
 data_merged[["percent.MT"]] <- PercentageFeatureSet(data_merged, pattern = "^MT-")
@@ -262,7 +262,7 @@ data_merged[["percent.RIBO"]] <- PercentageFeatureSet(data_merged, pattern = "^R
 
 Now let's make sure that all the qc metrics are present in the metadata by using the head() function:
 
-```{r}
+```r
 > head (data_merged)
                       orig.ident nCount_RNA nFeature_RNA      S.Score   G2M.Score Phase percent.MT percent.RIBO
 H1_AAACGAAAGTGGAAAG-1    Human-1        501          269 -0.021500501  0.02518923   G2M  12.574850    0.3992016
@@ -284,7 +284,7 @@ There are three columns of information:
 ### Visualize the common  QC metrics
 Run **chunk 7** to plot the common QC metrics. 
 
-```{r chunk 7}
+```r
 VlnPlot(data_merged, features = c("nFeature_RNA", "nCount_RNA"), ncol = 2)
 VlnPlot(data_merged, features = c("percent.MT","percent.RIBO"), ncol = 2)
 FeatureScatter(data_merged, feature1 = "percent.RIBO", feature2 = "percent.MT")
@@ -324,7 +324,7 @@ Now that we have visualized the various metrics, we can decide on the thresholds
 
 Run **chunk 8** to filter the merged dataset based on the parameters specified above. Here we are using the use the subset() function.
 
-```{r chunk 8}
+```r
 data_filtered <- subset(data_merged, subset = nFeature_RNA > 500 & nCount_RNA < 200000 & percent.MT < 25 & percent.RIBO > 3)
 VlnPlot(data_filtered, features = c("nFeature_RNA", "nCount_RNA"), ncol = 2)
 VlnPlot(data_filtered, features = c("percent.MT","percent.RIBO"), ncol = 2)
@@ -342,7 +342,7 @@ After performing the filtering, it’s recommended to look back over the metrics
 ### Save the filtered seurat object
 Based on these QC metrics we would identify any failed samples and move forward with our filtered cells. Often we iterate through the QC metrics using different filtering criteria; it is not necessarily a linear process. When satisfied with the filtering criteria, we would save our filtered cell object for clustering and marker identification. Please run **chunk 9** to save the filtered cells as a .rds file:
 
-```{r chunk 9}
+```r
 saveRDS(data_filtered, file = "data_filtered.rds")
 ```
 

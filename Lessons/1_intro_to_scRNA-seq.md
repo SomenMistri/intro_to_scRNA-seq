@@ -103,7 +103,7 @@ Instruction on how to install and run the cellranger pipeline can be accessed th
        
 ### A typical "Cell Ranger count" run in VACC
 
-```
+```bash
 #------------------------------------------------------------
 #!/bin/bash
 # Set Partition

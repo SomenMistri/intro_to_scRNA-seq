@@ -62,7 +62,8 @@ In the "2_Integration_and_Clustering" folder, you will find the **2_data_integra
 ### Load required packages
 
 Run chunk 1 to load the required libraries
-```
+
+```r
 library(XVector)
 library(Seurat)
 library(tidyverse)
@@ -76,13 +77,13 @@ _Note: If you have not installed the packages yet, then install them first befor
 ### Load the filtered seurat object (data_filtered.rds)
 Read in the filtered data by running chunk 2. The readRDS() function used in this chunk can read in R objects that were previously created.
 
-```
+```r
 data.filtered <- readRDS ("data_filtered.rds")
 ```
 Let's take a look at the data to make sure everything looks good"
 
 
-```
+```r
 > head(data.filtered)
                       orig.ident nCount_RNA nFeature_RNA      S.Score    G2M.Score Phase  percent.MT percent.RIBO
 H1_AAACGAAGTCATAGTC-1    Human-1      72725         7990 -0.056463192 -0.087881120    G1 14.34994844    14.304572
