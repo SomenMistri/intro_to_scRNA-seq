@@ -32,6 +32,10 @@ _**Recommendations:**_
 ### Copy the input file and load packages
 In the "1_Data_loading_and_QC_filtering" folder, you will find the "data_filtered.rds" file. Copy that file to this folder ("2_Integration_and_Clustering").
 
+In the "2_Integration_and_Clustering" folder, you will find the **2_data_integration_and_clustering.Rmd** R markdown file. Open the R markdown file and run each chunks sequentially.
+
+
+
     scRNAseq_analysis                         
        ├──0_Install_R_packages_and_check.Rmd
        ├──1_Human_PDAC_tissue 
@@ -47,7 +51,9 @@ In the "1_Data_loading_and_QC_filtering" folder, you will find the "data_filtere
        │   │    ├──data_preliminary_clustered.rds
        │   │    └──Figures
        │   │
-       │   ├──2_Integration_and_Clustering    
+       │   ├──2_Integration_and_Clustering**  
+       │   │   └──2_data_integration_and_clustering.Rmd  
+       │   │ 
        │   └──3_Data_Visualization
        │   
        └── 2_Human_PDAC_PBMC
@@ -108,7 +114,13 @@ The proposed solution was the use of **Pearson residuals for transformation**, a
 * More evidence == more of a weight; Genes that are expressed in only a small fraction of cells will be favored (useful for finding rare cell populations)
 * Not just a consideration of the expression level is, but also the distribution of expression
 
-_In this lesson we will primarily use the "SCTransform" function of seurat to normalize the data. Note that this single _SCTransform()_ command replaces _NormalizeData(), ScaleData(), and FindVariableFeatures()_ commands of the original Seurat workflow which performs the log-normalization.
+In this lesson we will primarily use the "SCTransform" function of seurat to normalize the data. Note that this single _SCTransform()_ command replaces _NormalizeData(), ScaleData(), and FindVariableFeatures()_ commands of the original Seurat workflow which performs the log-normalization.
+
+Run **chunk 3** to normalize the filtered cells (data.filtered) using the **SCTransform()** function of seurat.
+
+```r
+data_SCT <- SCTransform(data.filtered, verbose = TRUE) 
+```
 
 
 ## Clustering cells based on top Principal components (PCs)
@@ -143,5 +155,244 @@ We could also rotate the entire plot and view the lines representing the variati
 
 Now, what if we had three samples/cells, then we would have an extra direction in which we could have variation (3D). Therefore, if we have *N* samples/cells we would have *N*-directions of variation or *N* principal components (PCs)! Once these PCs have been calculated, the PC that deals with the largest variation in the dataset is designated PC1, and the next one is designated PC2 and so on. 
 
+Now perform principal component analysis **(PCA)** on the normalized (using the SCTranform function) dataset by running **chunk 4**.
+
+```r
+data_PCA<- RunPCA(data_SCT, npcs = 40, verbose = FALSE)
+```
+
+### Identify significant PCs
+To overcome the extensive technical noise in the expression of any single gene for scRNA-seq data, Seurat assigns cells to clusters based on their PCA scores derived from the expression of the integrated most variable genes, with each PC essentially representing a “metagene” that combines information across a correlated gene set. Determining how many PCs to include in the clustering step is therefore important to ensure that we are capturing the majority of the variation, or cell types, present in our dataset.
+
+It is useful to explore the PCs prior to deciding which PCs to include for the downstream clustering analysis.
+
+* One way of exploring the PCs is using a heatmap to visualize the most variant genes for select PCs with the genes and cells ordered by PCA scores. The idea here is to look at the PCs and determine whether the genes driving them make sense for differentiating the different cell types.
+
+* The elbow plot is another helpful way to determine how many PCs to use for clustering so that we are capturing majority of the variation in the data. The elbow plot visualizes the standard deviation of each PC, and we are looking for where the standard deviations begins to plateau. Essentially, where the elbow appears is usually the threshold for identifying the majority of the variation. However, this method can be quite subjective.
+
+Run **chunk 5** to create both the **heatmap** and **elbow plot**:
+
+```r
+# Explore heatmap of PCs
+DimHeatmap(data_PCA, 
+           dims = 1:10, 
+           cells = 500, 
+           balanced = TRUE)
+
+# Let's draw the elbow plot using the top 40 PCs
+ElbowPlot(object = data_PCA, 
+          ndims = 40)
+```
+<p align="center">
+<img src="../img/heatmap_elbow_1.png" width="900">
+</p>
+
+### Cluster the cells
+Clusters of cells are obtained by grouping cells based on the similarity of their gene expression profiles. Expression profile similarity is determined via distance metrics, which often take dimensionality‐reduced representations as input. Seurat assigns cells to clusters based on their PCA scores derived from the expression of the integrated most variable genes.
+
+While PCA determines all PCs, we can only plot two at a time. In contrast, dimensionality reduction techniques such as Uniform Manifold Approximation and Projection **(UMAP)** take the information from any number of top PCs to arrange the cells in this multidimensional space. It takes those distances in multidimensional space and plot them in two dimensions working to preserve local and global structure. In this way, the distances between cells represent similarity in expression.
+
+For clustering the cells, **Seurat** uses a graph-based clustering approach using a **K-nearest neighbor** approach, and then attempts to partition this graph into highly interconnected ‘quasi-cliques’ or ‘communities’. The first step is to construct a K-nearest neighbor (KNN) graph based on the euclidean distance in PCA space. This is done in Seurat by using the **FindNeighbors()** function. Next, Seurat iteratively groups cells together with the goal of optimizing the standard modularity function. The **FindClusters()** function of Seurat takes care of this graph-based clustering. The **"resolution"** is an important argument at this step that sets the “granularity” of the downstream clustering and will need to be optimized for every individual experiment. For datasets of 3,000 - 5,000 cells, the resolution set between 0.4-1.4 generally yields good clustering. Increased resolution values lead to a greater number of clusters, which is often required for larger datasets.
+
+Note: The **RunUMAP()** and **FindNeighbors()** functions will require you to input number of PCA dimentions to use for the visualization. It is suggested to use the same number of PCs as input in both cases.
+
+Run chunk 6 to perform **RunUMAP()**, **FindNeighbors()**, **FindClusters()** functions one after another:
+
+```r
+# Runs the Uniform Manifold Approximation and Projection (UMAP) dimensional reduction technique
+data_clust <- RunUMAP(data_PCA, reduction = "pca", dims = 1:30)
+# Determine the K-nearest neighbor graph
+data_clust <- FindNeighbors(object = data_clust, 
+                                dims = 1:30)
+# Perform graph based clustering
+data_clust <- FindClusters(object = data_clust,
+                               resolution = 0.6)
+
+# Visualize clustered cells
+DimPlot(data_clust, reduction = "umap", label = TRUE) + NoLegend()
+
+# Save the clustered plot
+ggsave(path = "Figs", filename = "Clusters.png",  height=5, width=6, units='in', dpi = 300, bg = "transparent", device='png')
+```
+
+<p align="center">
+<img src="../img/Clusters.png" width="600">
+</p>
+
+#### Explore metadata
+Run chunk 7 to quickly check whether "seurat_clusters" column was added to the metadata or not.
+
+```r
+head(data_clust@meta.data)
+```
+
+### Explore sources of unwanted variation
+
+The first step in the workflow is to see if our data contains any unwanted variability. The most common biological effect that is evaluated in single-cell RNA-seq data is the effect of cell cycle on the transcriptome. Another unwanted variability can be caused by batch effect which is a technical source of variation. This step of the workflow involves exploring our data to identify which covariates we would like to correct for.
+
+Run chunk 8 to Explore the effects of cell cycle genes:
+
+```r
+# Evaluating effects of cell cycle (Phase)
+DimPlot(data_clust, group.by = "Phase", label = FALSE)
+
+# Save the plot
+ggsave(path = "Figs", filename = "CellCycle_Phase.png",  height=5, width=7, units='in', dpi = 300, bg = "transparent", device='png')
+```
+
+<p align="center">
+<img src="../img/CellCycle_Phase_with_ref.png" width="900">
+</p>
+
+Run chunk 9 to explore technical sources of variation such as the Batch Effect:
+
+```r
+# Set identity classes to seurat_clusters
+Idents(object = data_clust) <- "seurat_clusters"
+
+# Explore the significance of back effect on clustering
+DimPlot(data_clust, split.by = "orig.ident", label = TRUE, ncol = 2)+ NoLegend()
+
+# Save the plot
+ggsave(path = "Figs", filename = "Batch_effect.png",  height=6, width=8, units='in', dpi = 300, bg = "transparent", device='png')
+```
+<p align="center">
+<img src="../img/Batch_effect.png" width="700">
+</p>
+
+Run chunk 10 to save the SCTransformed and clustered RDS file 
+
+```r
+saveRDS(data_clust, file= "data_clust_no_integration.rds") 
+```
+
+### To integrate or not to integrate?
+Generally, we always look at our clustering without integration before deciding whether we need to perform any alignment. Do not just always perform integration because you think there might be differences - explore the data.
+
+If cells cluster by sample, condition, batch, dataset, modality, the **integration** step can greatly improve the clustering and the downstream analyses.
+
+As the cells we are investigating in this lesson clearly cluster by batch, it is a good idea to perform integration.
+
+### Data integration 
+
+Run **chunk 11** to perform the integration in one click. 
+
+First, split the filtered seurat object to individual human samples and perform **SCtransform** on each sample separately. At this step, we can regress out any sources of variation such as cell cycle features, percent.MT, percent.RIBO etc. Here, we will regress out variations caused by cell cycle genes (S.Score,G2M.Score) (**Note: This particular dataset does not require cell cycle regression. However, we will perform the regression anyway to practice.)**
+
+Following SCTransform normalization, we will perform **integration** of data using the following seurat function one after another: _SelectIntegrationFeatures(), PrepSCTIntegration(), FindIntegrationAnchors(), and IntegrateData()_
+
+```r
+#Let's split the object based on orig.ident
+Idents(data.filtered) <- "orig.ident"
+data.list <- SplitObject(data.filtered, split.by = "ident")
+
+# perform SCTransform normalization with cell cycle regression
+data.list <- lapply(X = data.list, FUN = function(x) {
+    x <- SCTransform(x, vars.to.regress = c("S.Score","G2M.Score"), verbose = FALSE)
+})
+
+# select integration features and prep step
+features <- SelectIntegrationFeatures(data.list)
+data.list <- PrepSCTIntegration(
+  data.list,
+  anchor.features = features
+)
+
+# downstream integration steps
+anchors <- FindIntegrationAnchors(
+  data.list,
+  normalization.method = "SCT",
+  anchor.features = features
+)
+data.integrated <- IntegrateData(anchors, normalization.method = "SCT")
+
+#Save the integrated file
+saveRDS(data.integrated, "data.integrated.rds")
+```
+
+### Cluster the cells of integrated dataset
+To perform PCA and identify significant PCs in the integrated data, please run the **chunk 12**:
+
+```r
+data_PCA2<- RunPCA(data.integrated, npcs = 40, verbose = FALSE)
+
+# Explore heatmap of PCs
+DimHeatmap(data_PCA2, 
+           dims = 1:10, 
+           cells = 500, 
+           balanced = TRUE)
+
+# Plot the elbow plot
+ElbowPlot(object = data_PCA2, 
+          ndims = 40)
+```
+
+Run **chunk 13** to perform RunUMAP(), FindNeighbors(), FindClusters() functions one after another on the integrated dataset:
+
+```{r chunk 13}
+# Runs the Uniform Manifold Approximation and Projection (UMAP) dimensional reduction technique
+data_clust2 <- RunUMAP(data_PCA2, reduction = "pca", dims = 1:30)
+# Determine the K-nearest neighbor graph
+data_clust2 <- FindNeighbors(object = data_clust2, 
+                                dims = 1:30)
+# Perform graph based clustering
+data_clust2 <- FindClusters(object = data_clust2,
+                               resolution = 0.6)
+
+# Visualize clustered cells
+DimPlot(data_clust2, reduction = "umap", label = TRUE) + NoLegend()
+
+# Save the clustered plot
+ggsave(path = "Figs", filename = "Clusters_integrated.png",  height=5, width=6, units='in', dpi = 300, bg = "transparent", device='png')
+```
+
+<p align="center">
+<img src="../img/Clusters_integrated.png" width="600">
+</p>
+
+Explore technical sources of variation such as the Batch Effect on integrated data by running **chunk 14**:
+
+```r
+# Set identity classes to seurat_clusters
+Idents(object = data_clust2) <- "seurat_clusters"
+
+# Explore the significance of back effect on clustering
+DimPlot(data_clust2, split.by = "orig.ident", label = TRUE, ncol = 2)+ NoLegend()
+
+# Save the plot
+ggsave(path = "Figs", filename = "Batch_effect_integrated.png",  height=6, width=8, units='in', dpi = 300, bg = "transparent", device='png')
+```
+<p align="center">
+<img src="../img/Batch_effect_integrated.png" width="700">
+</p>
+
+### Save the integrated and clustered cells
+
+Run **chunk 15** to save the integrated and clustered cells as a RDS file 
+
+_(Note: this file is important for the next lesson)_
+
+```r
+saveRDS(data_clust2, file= "data_clust_integrated.rds") 
+```
 
 
+                                             ---------------------------------
+                                             -------END of THIS LESSON -------
+                                             ---------------------------------
+                                             
+****
+### Citation
+
+To cite material from this course in your publications, please use:
+
+> Jihe Liu, William J. Gammerdinger, Meeta Mistry, Mary E. Piper, & Radhika S. Khetani. (2022, January 6). hbctraining/Intro-to-shell-flipped: Shell and HPC Lessons from HCBC (first release). Zenodo. https://doi.org/10.5281/zenodo.5826091
+
+A lot of time and effort went into the preparation of these materials. Citations help us understand the needs of the community, gain recognition for our work, and attract further funding to support our teaching activities. Thank you for citing this material if it helped you in your data analysis.
+
+---
+These materials have been developed by members of the teaching team at the [Harvard Chan Bioinformatics Core (HBC)](http://bioinformatics.sph.harvard.edu/). These are open access materials distributed under the terms of the [Creative Commons Attribution license](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.
+
+Some materials used in these lessons were derived from work that is Copyright © Data Carpentry (http://datacarpentry.org/). 
+All Data Carpentry instructional material is made available under the [Creative Commons Attribution license](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0).
+****
