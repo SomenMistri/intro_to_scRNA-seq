@@ -18,14 +18,18 @@ This repository has materials for an Introduction to single-cell RNA-sequencing 
 
 ## To begin: Click on Class schedule 
 
-[Class Schedule](Schedule/)
+[Class Schedule](/Schedule/README.md)
 
 ## Class Lectures
 
-[Day1: Introduction to single-cell RNA sequencing](https://github.com/SomenMistri/intro_to_scRNA-seq/blob/main/Lessons/Day_1.md)
+[Day 1: Introduction to single-cell RNA sequencing](/Lessons/1_intro_to_scRNA-seq.md)
 
-[Day 2: Data loading and QC filtering](https://github.com/SomenMistri/intro_to_scRNA-seq/blob/main/Lessons/Day_2.md)
+[Day 2: Data loading and QC filtering of scRNA-Seq data](/Lessons/2_data_loading_and_QC_filtering.md)
       
+[Day 3: Data integration and clustering](/Lessons/3_integration_and_clustering.md)
+
+[Day 4: Data integration and clustering](/Lessons/4_data_visualization_interpretation.md)
+
                      
 ### Citation
 

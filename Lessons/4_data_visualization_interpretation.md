@@ -1,4 +1,4 @@
-# Data loading and QC filtering of scRNA-Seq data
+# Data visualization and 
 
 ## A typical single cell RNA-seq analysis workflow
 After quantifying gene expression from raw sequencing reads, we need to bring the count matrix data (filtered_feature_bc_matrix) into R to generate metrics for performing QC and further downstream analysis.
