@@ -18,7 +18,7 @@ This repository has materials for an Introduction to single-cell RNA-sequencing 
 
 ## To begin: Click on Class schedule 
 
-[Class Schedule](/Schedule/README.md)
+[Class Schedule](/schedule/README.md)
 
 ## Class Lectures
 
