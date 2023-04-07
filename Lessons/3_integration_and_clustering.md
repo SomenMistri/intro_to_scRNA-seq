@@ -29,7 +29,7 @@ _**Recommendations:**_
  
 ***
 
-### Copy the input file and load packages
+### Copy the input file to the analysis folder
 In the "1_Data_loading_and_QC_filtering" folder, you will find the "data_filtered.rds" file. Copy that file to this folder ("2_Integration_and_Clustering").
 
 In the "2_Integration_and_Clustering" folder, you will find the **2_data_integration_and_clustering.Rmd** R markdown file. Open the R markdown file and run each chunks sequentially.
