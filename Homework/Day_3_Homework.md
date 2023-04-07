@@ -9,7 +9,7 @@ Take a look at the **scRNAseq_analysis** folder:
        │   ├──2_Integration_and_Clustering    
        │   └──3_Data_Visualization
        │   
-       └──2_Human_PDAC_PBMC
+       └──2_Human_PDAC_PBMC**
            │                                  
            ├── 1_Data_loading_and_QC_filtering
            │     ├──PDAC_pbmc_1_filtered_feature_bc_matrix
@@ -27,4 +27,5 @@ Your homework is to replicate the data integration and clustering steps we perfo
 
 _Note: Please USE a different "resolution" (0.5 or 0.8 or 1.0) than the one we used for the PDAC human dataset._
 
+**This homework is worth 50 points.**  
 **For this homework you will have until 11:59PM on Sunday, April 23rd to submit.**  

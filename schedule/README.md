@@ -21,6 +21,8 @@
 | ------------- | ------------- |
 |   ~10 mins  | Review of clustering  |
 | ~55 mins  | [Data visualization and interpretation](../Lessons/4_data_visualization_interpretation.md)  |
+## Tuesday, April 25th
+**NO CLASS**
 
 ## Questions?
 Please email me if you have questions or would like to schedule a meeting  

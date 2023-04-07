@@ -1,6 +1,6 @@
 # Data integration and clustering
 
-## A typical single cell RNA-seq analysis workflow
+## A typical single-cell RNA-seq analysis workflow
 After filtering cells using QC metrics, we need to cluster the cells based on gene expression similarity. Before clustering, we might need to perform another step "integration". We will determine whether integration is necessary or not by first clustering without integration.
 
  <p align="center">
@@ -32,7 +32,7 @@ _**Recommendations:**_
 ### Copy the input file to the analysis folder
 In the "1_Data_loading_and_QC_filtering" folder, you will find the "data_filtered.rds" file. Copy that file to this folder ("2_Integration_and_Clustering").
 
-In the "2_Integration_and_Clustering" folder, you will find the **2_data_integration_and_clustering.Rmd** R markdown file. Open the R markdown file and run each chunks sequentially.
+In the "2_Integration_and_Clustering" folder, you will find the **2_data_integration_and_clustering.Rmd** R markdown file. Open the R markdown file and run each chunk sequentially.
 
 
 
@@ -61,7 +61,7 @@ In the "2_Integration_and_Clustering" folder, you will find the **2_data_integra
 
 ### Load required packages
 
-Run chunk 1 to load the required libraries
+Run chunk 1 to load the required libraries:
 
 ```r
 library(XVector)
@@ -80,7 +80,7 @@ Read in the filtered data by running chunk 2. The readRDS() function used in thi
 ```r
 data.filtered <- readRDS ("data_filtered.rds")
 ```
-Let's take a look at the data to make sure everything looks good"
+Let's take a look at the data to make sure everything looks good:
 
 
 ```r
@@ -100,7 +100,7 @@ H1_AACCAACCACTGGCCA-1    Human-1      19708         4857  0.522360640  0.9243811
 
 
 ## Normalization
-An essential first step in the majority of mRNA expression analyses is normalization, whereby systematic variations are adjusted for to **make expression counts comparable across genes and/or samples**. The counts of mapped reads for each gene is proportional to the expression of RNA ("interesting") in addition to many other factors ("uninteresting"). Normalization is the process of adjusting raw count values to account for the "uninteresting" factors. The main factors often considered during normalization are: sequencing depth and gene length.
+An essential first step in most mRNA expression analyses is normalization, whereby systematic variations are adjusted to **make expression counts comparable across genes and/or samples**. The counts of mapped reads for each gene are proportional to the expression of RNA ("interesting") in addition to many other factors ("uninteresting"). Normalization is the process of adjusting raw count values to account for the "uninteresting" factors. The main factors often considered during normalization are: sequencing depth and gene length.
 
 ### Methods for scRNA-seq normalization
 
@@ -115,7 +115,7 @@ The proposed solution was the use of **Pearson residuals for transformation**, a
 * More evidence == more of a weight; Genes that are expressed in only a small fraction of cells will be favored (useful for finding rare cell populations)
 * Not just a consideration of the expression level is, but also the distribution of expression
 
-In this lesson we will primarily use the "SCTransform" function of seurat to normalize the data. Note that this single _SCTransform()_ command replaces _NormalizeData(), ScaleData(), and FindVariableFeatures()_ commands of the original Seurat workflow which performs the log-normalization.
+In this lesson, we will primarily use the "SCTransform" function of seurat to normalize the data. Note that this single _SCTransform()_ command replaces _NormalizeData(), ScaleData(), and FindVariableFeatures()_ commands of the original Seurat workflow, which performs the log-normalization.
 
 Run **chunk 3** to normalize the filtered cells (data.filtered) using the **SCTransform()** function of seurat.
 
@@ -141,7 +141,7 @@ You could draw a line through the data in the direction representing the **most 
 
 We also see the genes vary somewhat above and below the line. We could draw another line through the data representing **the second most amount of variation** in the data, since this plot is in 2D (2 axes).
 
-The genes near the ends of each line would be those with the highest variation; these genes have the **greatest influence** on the direction of the line, mathematically. For example, a small change in the value of *Gene C* would greatly change the direction of the longer line, whereas a small change in *Gene A* or *Gene D* would have little affect on it.
+The genes near the ends of each line would be those with the highest variation; these genes have the **greatest influence** on the direction of the line, mathematically. For example, a small change in the value of *Gene C* would greatly change the direction of the longer line, whereas a small change in *Gene A* or *Gene D* would have little effect on it.
 
 <p align="center">
 <img src="../img/PCA_2sample_variation2.png" width="600">
@@ -169,7 +169,7 @@ It is useful to explore the PCs prior to deciding which PCs to include for the d
 
 * One way of exploring the PCs is using a heatmap to visualize the most variant genes for select PCs with the genes and cells ordered by PCA scores. The idea here is to look at the PCs and determine whether the genes driving them make sense for differentiating the different cell types.
 
-* The elbow plot is another helpful way to determine how many PCs to use for clustering so that we are capturing majority of the variation in the data. The elbow plot visualizes the standard deviation of each PC, and we are looking for where the standard deviations begins to plateau. Essentially, where the elbow appears is usually the threshold for identifying the majority of the variation. However, this method can be quite subjective.
+* The elbow plot is another helpful way to determine how many PCs to use for clustering so that we are capturing the majority of the variation in the data. The elbow plot visualizes the standard deviation of each PC, and we are looking for where the standard deviations begins to plateau. Essentially, where the elbow appears is usually the threshold for identifying the majority of the variation. However, this method can be quite subjective.
 
 Run **chunk 5** to create both the **heatmap** and **elbow plot**:
 
@@ -272,7 +272,7 @@ Generally, we always look at our clustering without integration before deciding 
 
 If cells cluster by sample, condition, batch, dataset, modality, the **integration** step can greatly improve the clustering and the downstream analyses.
 
-As the cells we are investigating in this lesson clearly cluster by batch, it is a good idea to perform integration.
+As the cells we are investigating in this lesson clearly cluster by batch, performing integration is a good idea.
 
 ### Data integration 
 
