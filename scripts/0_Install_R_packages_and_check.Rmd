@@ -8,7 +8,7 @@ if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("XVector",force = TRUE)
 BiocManager::install("multtest")
-BiocManager::install("glmGamPo")
+BiocManager::install("glmGamPoi")
 ```
 
 #### Install required Packages listed below from CRAN (need to run once in a device) 
@@ -20,6 +20,7 @@ install.packages('scales')
 install.packages('metap')
 install.packages('Seurat')
 install.packages("ggplot2")
+install.packages("sctransform")
 ```
 
 ##### Check for successful installation by loading the packages
@@ -30,5 +31,6 @@ library(tidyverse)
 library(Matrix)
 library(RCurl)
 library(scales)
+library(sctransform)
 ```
 ------End------

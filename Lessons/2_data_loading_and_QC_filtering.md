@@ -1,6 +1,6 @@
 # Data loading and QC filtering of scRNA-Seq data
 
-## A typical single cell RNA-seq analysis workflow
+## A typical single-cell RNA-seq analysis workflow
 After quantifying gene expression from raw sequencing reads, we need to bring the count matrix data (filtered_feature_bc_matrix) into R to generate metrics for performing QC and further downstream analysis.
 
  <p align="center">
@@ -29,7 +29,7 @@ _**Recommendations:**_
 
 
 ### Getting ready with the count matrix and R markdown files
-First, log in to  your VACC account. Copy the scRNAseq_analysis.tar file from the shared folder to your home directory. This .tar file contains the count matrix files as well as the necessary R markdown files (.Rmd) required for this tutorial.
+First, log in to your VACC account. Copy the scRNAseq_analysis.tar file from the shared folder to your home directory. This .tar file contains the count matrix files as well as the necessary R markdown files (.Rmd) required for this tutorial.
 
 ```bash
 cp -r /gpfs1/cl/mmg232/course_materials/scRNAseq_analysis.tar

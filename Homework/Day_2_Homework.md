@@ -15,7 +15,7 @@ First, take a look at the **scRNAseq_analysis** folder:
        │   ├──2_Integration_and_Clustering    
        │   └──3_Data_Visualization
        │   
-       └──2_Human_PDAC_PBMC
+       └──2_Human_PDAC_PBMC**
            │                                  
            └── 1_Data_loading_and_QC_filtering
                 ├──PDAC_pbmc_1_filtered_feature_bc_matrix
@@ -34,4 +34,5 @@ _Hint: You will need to edit **chunk 2** to load the new PBMC count matrices whi
 
 _Note: Please **DO NOT** use the same filtering parameters we used for the PDAC human dataset. Use a different set of filtering parameters for the human PBMC datasets_
 
+**This homework is worth 50 points.**  
 **For this homework you will have until 11:59PM on Sunday, April 16th to submit.**  

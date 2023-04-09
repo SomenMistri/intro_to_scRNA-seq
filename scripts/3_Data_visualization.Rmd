@@ -1,0 +1,133 @@
+---
+title: "R Notebook - 3_Data_Visualization"
+output: html_notebook
+---
+#### Some useful links
+https://satijalab.org/seurat/articles/pbmc3k_tutorial.html
+https://satijalab.org/seurat/articles/merge_vignette.html
+https://satijalab.org/seurat/articles/integration_introduction.html
+https://satijalab.org/seurat/articles/sctransform_vignette.html
+
+#### Get the input file
+In the "2_Integration_and_Clustering" folder, you will find the "data_clust_integrated.rds" file. Copy that file to the current folder where you have the .rmd file ("3_Data_visualization")
+
+#### Load required packages
+To load the required packages using the library() function, run chunk 1 by clicking on the "Run Current Chunk" button on the right. This will load the following packages.
+
+```{r chunk 1}
+library(XVector)
+library(Seurat)
+library(tidyverse)
+library(Matrix)
+library(RCurl)
+library(scales)
+library(sctransform)
+```
+Note: If you have not installed the packages yet, then install them first before loading
+
+#### Load the integrated clustered seurat object (data_clust_integrated.rds) 
+Read in the filtered data by running chunk 2. The readRDS() function used in this chunk can read in R objects that were previously created.
+
+```{r chunk 2}
+data_clust_integrated <- readRDS ("data_clust_integrated.rds")
+
+# Visualize the clustered (integrated) cells
+DimPlot(data_clust_integrated, reduction = "umap", label = TRUE) + NoLegend()
+
+# Save the plot
+ggsave(path = "Figs", filename = "Clusters_integrated.png",  height=5, width=6, units='in', dpi = 300, bg = "transparent", device='png')
+```
+
+#### Find markers for each cluster
+Run chunk 3 to find markers for every cluster compared to all remaining cells. Report only the positive ones"
+```{r chunk 3}
+DefaultAssay(data_clust_integrated)  <- "RNA"
+Idents(data_clust_integrated) <- "seurat_clusters"
+data_markers <- FindAllMarkers(data_clust_integrated, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+data_markers %>%
+    group_by(cluster) %>%
+    slice_max(n = 5, order_by = p_val)
+```
+
+#### Make dot plot
+Run chunk 4 to make a dotplot representing the expression of selected genes in each cluster.
+The gene list was selected based on the Figure S1B of our paper of interest (Du et al.,2022)
+
+```{r chunk 4}
+DefaultAssay(data_clust_integrated)  <- "RNA"
+# Select features (genes) to look at:
+FEATURES <- c("MS4A1","CD79A","IGJ","LYZ","APOE","ITGAM","ITGAX","GZMB","HLA-DRA","CD14","CD3D",
+              "NKG7","NCAM1","CD3E","ACTA2","CDH11","PDGFRB","PDPN","THY1","COL1A1","COL3A1",
+              "IRF7","PLVAP","VWF","CDH5","TPSAB1","CPA3","LUM","DCN","PRSS1","CTRB2","REG1A",
+              "SPP1","MMP7","CLU","MKI67","KRT8","SPINK1","KRT19","KRT18","TFF1","IL22","IL22RA2",
+              "CD207","CD1A","CD101","ITGAE","CCL22","LAMP3","IRF8",
+              "CD4","CD8A")
+              
+
+# Dot plots - the size of the dot corresponds to the percentage of cells expressing the
+# feature in each cluster. The color represents the average expression level
+DotPlot(data_clust_integrated, features = FEATURES)+RotatedAxis()
+
+# Save the dot plot
+ggsave(path = "Figs", filename = "Human_PDAC_clustered_gene_dotplot.png",  height=8, width=14, units='in', dpi = 300, bg = "transparent", device='png')
+```
+
+#### Rename clusters based on gene expression profile
+Run chunk 5 to rename the clusters to specific cell types based on their gene expression profile.
+```{r chunk 5}
+DefaultAssay(data_clust_integrated)  <- "integrated"
+Idents(data_clust_integrated) <- "seurat_clusters"
+levels(data_clust_integrated) <- c("0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15")
+current.ids = c("0","1","2","3",
+                "4","5","6","7",
+                "8","9","10","11",
+                "12","13","14","15")
+new.cluster.ids = c("Epithelial","CD4 T cells","Achinar","Myeloid",
+                    "Myeloid","CD8 T cells","Fibroblast","NK cells",
+                    "B cells","NK cells","CD8 T cells","Dendritic cell",
+                    "CD8 T cells","Endothelial","Plasma cells","Mast cells")
+names(new.cluster.ids) <- levels(data_clust_integrated)
+data_clust_integrated_rename <- RenameIdents(object = data_clust_integrated, new.cluster.ids)
+
+# Add new.cluster.ids as a new column in metadata
+new_cluster_ids <- data_clust_integrated_rename@active.ident
+data_clust_integrated_rename <- AddMetaData(data_clust_integrated_rename, metadata=new_cluster_ids, col.name = "new_cluster_ids")
+
+# Visualize the clustered (renamed) cells
+DimPlot(data_clust_integrated_rename, reduction = "umap", label = TRUE) + NoLegend()
+
+# Save the plot
+ggsave(path = "Figs", filename = "Clusters_integrated_renamed.png",  height=5, width=6, units='in', dpi = 300, bg = "transparent", device='png')
+```
+
+#### Save the renamed clustered file
+```{r chunk 6}
+saveRDS(data_clust_integrated_rename, "data_clustered_integrated_renamed.rds")
+```
+
+#### Plot the expression of WNT components
+Run chunk 7 to select canonical features of WNT signaling pathway
+```{r chunk 7}
+DefaultAssay(data_clust_integrated_rename)  <- "RNA"
+#Now select features
+FEATURES <- c("WNT4","WNT5A","PORCN","TCF3","TCF4","TCF7","LEF1","AXIN1","AXIN2")
+```
+
+Run chunk 8 to Make dotplot of selected features
+```{r chunk 8}
+DotPlot(data_clust_integrated_rename, features = FEATURES)+RotatedAxis()
+
+# Save the plot
+ggsave(path = "Figs", filename = "Human_PDA_clustered_WTN_dotplot.png",  height=5, width=8, units='in', dpi = 300, bg = "transparent", device='png')
+```
+
+Run chunk 9 to Make violinplot of the expression of TCF7 accross different clusters
+
+```{r chunk 9}
+VlnPlot(data_clust_integrated_rename, features = "TCF7")+RotatedAxis()
+
+ggsave(path = "Figs", filename = "Human_PDAC_clustered_TCF7_violinplot.png",  height=5, width=8, units='in', dpi = 300, bg = "transparent", device='png')
+```
+
+
+------End------
