@@ -32,7 +32,7 @@ _**Recommendations:**_
 First, log in to your VACC account. Copy the scRNAseq_analysis.tar file from the shared folder to your home directory. This .tar file contains the count matrix files as well as the necessary R markdown files (.Rmd) required for this tutorial.
 
 ```bash
-cp -r /gpfs1/cl/mmg232/course_materials/scRNAseq_analysis.tar
+cp /gpfs1/cl/mmg232/course_materials/scRNAseq_analysis.tar scRNAseq_analysis.tar
 ```
 
 Then, extract the .tar file in your home directory. You should see a new folder named "scRNAseq_analysis" in your home directory. 
