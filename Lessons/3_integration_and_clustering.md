@@ -124,7 +124,7 @@ data_SCT <- SCTransform(data.filtered, verbose = TRUE)
 ```
 
 
-## Clustering cells based on top Principal components (PCs)
+## Clustering cells based on top principal components (PCs)
 
 ### Principal Component Analysis (PCA)
 Principal Component Analysis (PCA) is a technique used to emphasize variation as well as similarity, and to bring out strong patterns in a dataset; it is one of the methods used for *"dimensionality reduction"*. We will briefly go over PCA in this lesson (adapted from StatQuests/Josh Starmer's YouTube video), but we strongly encourage you to explore the video [StatQuest's video](https://www.youtube.com/watch?v=_UVHneBUBW0) for a more thorough explanation/understanding. 
