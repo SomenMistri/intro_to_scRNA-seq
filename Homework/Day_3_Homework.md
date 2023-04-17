@@ -23,9 +23,16 @@ Take a look at the **scRNAseq_analysis** folder:
                 
 Open the **2_Human_PDAC_PBMC > 1_Data_loading_and_QC_filtering** folder. There you will find the **data_filtered.rds** file. Copy this file to the **2_Human_PDAC_PBMC > 2_Integration_and_Clustering** folder. Then run the **2_data_integration_and_clustering.Rmd** R markdown file.
 
-Your homework is to replicate the data integration and clustering steps we performed today on the PBMC dataset. After running all the **chunks** of this script, please save it. This will create a **2_data_integration_and_clustering.nb.html** file in the same folder. Rename this **.html** file with your last name and email it to the **smistri@uvm.edu** address.
+Your homework is to replicate the data integration and clustering steps we performed today on the PBMC dataset. After running all the **chunks** of this script, please save it. This will create a **2_data_integration_and_clustering.nb.html** file in the same folder. Rename this **nb.html** file with your last name and download it to your device.
 
-_Note: Please USE a different "resolution" (0.5 or 0.8 or 1.0) than the one we used for the PDAC human dataset._
+Moreover, if you run all the chunks, it should create a **"Figs"** folder in the current analysis directory. Copy all the **.png** files (n=5) to your personal device.
+
+Finally, email the **nb.html** file along with the five **.png** files to **smistri@uvm.edu**.
+
+_Note: Please USE a different "resolution" (0.5 or 0.8 or 1.0) value for clustering than the one we used for the PDAC human dataset._
+_Note: Please USE a different "dims" value for clustering than the one we used for the PDAC human dataset._
+_Note: Please perform SCTransform normalization **without** regressing out cell cycle scores._
+
 
 **This homework is worth 50 points.**  
-**For this homework you will have until 11:59PM on Sunday, April 23rd to submit.**  
+**For this homework you will have until 11:59 PM on Sunday, April 23rd to submit.**

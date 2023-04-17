@@ -36,3 +36,5 @@ _Note: Please **DO NOT** use the same filtering parameters we used for the PDAC 
 
 **This homework is worth 50 points.**  
 **For this homework you will have until 11:59PM on Sunday, April 16th to submit.**  
+
+Please click [here](/Homework/Mistri_HW_Day2_markdown_sample.nb.html) to get to a sample **.nb.html** file for this homework.
