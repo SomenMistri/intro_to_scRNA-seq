@@ -27,11 +27,13 @@ Your homework is to replicate the data integration and clustering steps we perfo
 
 Moreover, if you run all the chunks, it should create a **"Figs"** folder in the current analysis directory. Copy all the **.png** files (n=5) to your personal device.
 
-Finally, email the **nb.html** file along with the five **.png** files to **smistri@uvm.edu**.
+**Finally, email the **nb.html** file along with the five **.png** files to **smistri@uvm.edu**.**
 
-_Note: Please USE a different "resolution" (0.5 or 0.8 or 1.0) value for clustering than the one we used for the PDAC human dataset._
-_Note: Please USE a different "dims" value for clustering than the one we used for the PDAC human dataset._
-_Note: Please perform SCTransform normalization **without** regressing out cell cycle scores._
+_Note: Please USE a different **"resolution"** (0.5 or 0.8 or 1.0) value for clustering than the one we used for the PDAC human dataset._
+
+_Note: Please USE a different **"dims"** value for clustering than the one we used for the PDAC human dataset._
+
+_Note: Please perform SCTransform normalization **without regressing out cell cycle scores**._
 
 
 **This homework is worth 50 points.**  
