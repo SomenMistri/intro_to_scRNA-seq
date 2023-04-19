@@ -54,7 +54,11 @@ In the "3_Data_visualization" folder, you will find the **3_Data_visualization.R
        │        └──3_Data_Visualization.rmd
        │   
        └── 2_Human_PDAC_PBMC
+In case you DO NOT have the "data_clust_integrated.rds" file in your "2_Integration_and_Clustering" folder, you can copy a pre-made "data_clust_integrated.rds" file to your "3_Data_visualization" folder from the shared directory. First navigate to the "3_Data_Visualization" folder and run the following:
 
+```bash
+cp /gpfs1/cl/mmg232/course_materials/data_clust_integrated.rds data_clust_integrated.rds
+```
 
 ### Load required packages
 
